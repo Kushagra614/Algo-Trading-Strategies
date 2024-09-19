@@ -1,8 +1,7 @@
-//SMA CODE IN C+++
-
 #include <iostream>
 #include <vector>
-#include <iomanip>  // For std::setw and std::fixed
+#include <iomanip>   // For std::setw and std::fixed
+#include <numeric>   // For std::accumulate
 
 class SMATradingStrategy {
 private:
@@ -24,10 +23,14 @@ public:
 
     // Calculate SMA for a given window size at a specific index
     double calculateSMA(int windowSize, int endIndex) {
-        double sum = 0.0;
-        for (int i = endIndex - windowSize + 1; i <= endIndex; ++i) {
-            sum += stockPrices[i];
-        }
+        // Ensure endIndex is valid
+        if (endIndex < windowSize - 1) return 0.0;
+
+        // Get the range of stock prices for the given window
+        std::vector<double> window(stockPrices.begin() + endIndex - windowSize + 1, stockPrices.begin() + endIndex + 1);
+
+        // Calculate SMA using std::accumulate
+        double sum = std::accumulate(window.begin(), window.end(), 0.0);
         return sum / windowSize;
     }
 
@@ -49,17 +52,17 @@ public:
                 holding = true;
                 position = cash / stockPrices[i];  // Buy shares
                 cash = 0;  // Invest all cash
-                action = "    Buy    " ;
+                action = "Buy";
             }
             else if (shortSMA < longSMA && holding) {
                 holding = false;
                 cash = position * stockPrices[i];  // Sell all shares
                 position = 0;  // No shares held
-                action = "    Sell   ";
+                action = "Sell";
             }
             else {
                 // Hold: no action
-                action = "    Hold   ";
+                action = "Hold";
             }
 
             // Print the results

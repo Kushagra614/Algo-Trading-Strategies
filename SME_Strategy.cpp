@@ -1,3 +1,5 @@
+//SMA CODE IN C+++
+
 #include <iostream>
 #include <vector>
 #include <iomanip>  // For std::setw and std::fixed

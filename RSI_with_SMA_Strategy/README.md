@@ -1,117 +1,199 @@
-# RSI Strategy with SMA
-
-This repository contains a C++ implementation of a trading strategy using the Relative Strength Index (RSI) and Simple Moving Average (SMA) indicators.
-
-## Table of Contents
-- [Introduction](#introduction)
-- [Indicators](#indicators)
-  - [RSI (Relative Strength Index)](#rsi-relative-strength-index)
-  - [SMA (Simple Moving Average)](#sma-simple-moving-average)
-- [Implementation](#implementation)
-  - [Class: TradingIndicators](#class-tradingindicators)
-  - [Methods](#methods)
-- [Usage](#usage)
-- [Example](#example)
-- [Contributing](#contributing)
-- [License](#license)
+# RSI Strategy (Relative Strength Index) with SMA
 
 ## Introduction
 
-This project implements a trading strategy that combines the Relative Strength Index (RSI) and Simple Moving Average (SMA) indicators. These technical analysis tools are commonly used by traders to identify potential buy and sell signals in financial markets.
-
-## Indicators
-
-### RSI (Relative Strength Index)
-
-RSI is a momentum oscillator that measures the speed and change of price movements. It oscillates between 0 and 100 and is used to identify overbought or oversold conditions of a stock or asset.
+RSI (Relative Strength Index) is a momentum oscillator used in technical analysis to measure the speed and change of price movements. It oscillates between 0 and 100 and helps identify overbought or oversold conditions of a stock or asset.
 
 - **Overbought**: RSI value > 70, indicating that the asset might be overvalued and a price drop could be due.
 - **Oversold**: RSI value < 30, indicating that the asset might be undervalued and a price increase could be expected.
 
-#### RSI Formula
+## How RSI Works
+
+RSI is calculated based on the average gains and average losses over a specified period (typically 14 days).
+
+- **Gain**: The price difference when a stock closes higher than the previous day.
+- **Loss**: The price difference when a stock closes lower than the previous day.
+
+### RSI Formula
 
 ```
 RSI = 100 - (100 / (1 + RS))
-Where:
-RS = Average Gain / Average Loss
 ```
 
-This can also be expressed as:
+Where:
+RS = Average Gain / Average Loss
 
+This formula can also be expressed as:
 ```
 RSI = 100 - (100 / (1 + (Average Gain / Average Loss)))
 ```
 
-### SMA (Simple Moving Average)
+## Interpretation of RSI
 
-SMA is a basic technical analysis tool that smooths out price data by calculating the average price over a specific number of periods.
+- An RSI value above 70 is generally considered overbought.
+- An RSI value below 30 is generally considered oversold.
+- The RSI can remain in overbought or oversold territory for extended periods during strong trends.
+- Divergences between the RSI and price action can signal potential trend reversals.
 
-## Implementation
+## Combining RSI with SMA
 
-### Class: TradingIndicators
+When using RSI in conjunction with SMA (Simple Moving Average), traders often look for:
 
-The `TradingIndicators` class encapsulates the logic for calculating both RSI and SMA.
+1. **Confirmation**: When the price crosses above or below the SMA, they may look to the RSI for confirmation of the trend.
+2. **Divergence**: If the price is making new highs or lows, but the RSI is not, this could signal a potential trend reversal.
+3. **Support/Resistance**: The SMA can act as a support or resistance level, and traders might use RSI to gauge the strength of price reactions at these levels.
 
-#### Properties:
-- `prices`: Vector to store historical prices
-- `smaWindow`: Window size for SMA calculation
-- `rsiWindow`: Window size for RSI calculation
+Remember that while these indicators can be powerful tools, they should be used in conjunction with other forms of analysis and risk management strategies for optimal trading decisions.
 
-### Methods
+## Trading Indicators: SMA and RSI Explanation
 
-1. **Constructor**
-   ```cpp
-   TradingIndicators(int smaWindow, int rsiWindow)
-   ```
+Let's break down the code and logic behind calculating Simple Moving Average (SMA) and Relative Strength Index (RSI). We'll explain how it works, why certain formulas are used, and what happens in a dry run.
 
-2. **updatePrice**
-   ```cpp
-   void updatePrice(double price)
-   ```
-   Adds a new price to the history and maintains the size of the price list.
+### Code Explanation
 
-3. **calculateSMA**
-   ```cpp
-   double calculateSMA()
-   ```
-   Calculates the Simple Moving Average over the last `smaWindow` prices.
+```cpp
+#include <iostream>
+#include <vector>
+#include <numeric>
+#include <cmath>
+```
 
-4. **calculateRSI**
-   ```cpp
-   double calculateRSI()
-   ```
-   Calculates the Relative Strength Index over the last `rsiWindow` prices.
+- `iostream` is used for input/output operations.
+- `vector` is a dynamic array where we store prices.
+- `numeric` provides functions like accumulate to sum up elements.
+- `cmath` provides mathematical functions like abs, pow, etc.
 
-## Usage
+### Class Definition: TradingIndicators
 
-To use this strategy in your C++ project:
+```cpp
+class TradingIndicators {
+private:
+    std::vector<double> prices;
+    int smaWindow, rsiWindow;
+```
 
-1. Include the necessary headers:
-   ```cpp
-   #include <iostream>
-   #include <vector>
-   #include <numeric>
-   #include <cmath>
-   ```
+- `prices`: This vector stores the historical prices. Each new price is added at the end, and we maintain a history to calculate indicators like SMA and RSI.
+- `smaWindow`: The window size for calculating the Simple Moving Average (SMA), typically set to 5.
+- `rsiWindow`: The window size for Relative Strength Index (RSI), typically set to 14.
 
-2. Create an instance of `TradingIndicators`:
-   ```cpp
-   const int SMA_WINDOW = 5;
-   const int RSI_WINDOW = 14;
-   TradingIndicators indicators(SMA_WINDOW, RSI_WINDOW);
-   ```
+### Constructor
 
-3. Update prices and calculate indicators:
-   ```cpp
-   double price = 100.0;
-   indicators.updatePrice(price);
-   double sma = indicators.calculateSMA();
-   double rsi = indicators.calculateRSI();
-   ```
+```cpp
+public:
+    TradingIndicators(int smaWindow, int rsiWindow)
+        : smaWindow(smaWindow), rsiWindow(rsiWindow) {}
+```
 
-## Example
+Constructor initializes the window sizes (for both SMA and RSI). We pass these sizes when we create an object of this class.
 
-Here's a simple example of how to use the `TradingIndicators` class:
+### updatePrice Method
+
+```cpp
+void updatePrice(double price) {
+    prices.push_back(price);  // Add new price to the list
+    if (prices.size() > std::max(smaWindow, rsiWindow)) {
+        prices.erase(prices.begin());  // Keep only necessary prices
+    }
+}
+```
+
+**Purpose**: This function is called every time a new price comes in.
+
+- It adds the latest price to the vector.
+- If the number of stored prices exceeds the maximum required window size (either for SMA or RSI), it removes the oldest price. This keeps the price list within bounds and avoids unnecessary memory usage.
+
+**Logic**: We only need to keep track of the last max(smaWindow, rsiWindow) prices to calculate SMA and RSI efficiently. Keeping extra data would be wasteful.
+
+### SMA Calculation
+
+```cpp
+double calculateSMA() {
+    if (prices.size() < smaWindow) return 0.0;  // Not enough data yet
+
+    double sum = std::accumulate(prices.end() - smaWindow, prices.end(), 0.0);
+    return sum / smaWindow;
+}
+```
+
+**Purpose**: This function calculates the Simple Moving Average (SMA) over the last smaWindow prices.
+
+- `accumulate`: Sums up the last smaWindow prices (from prices.end() - smaWindow to prices.end()).
+
+**Why use this formula?**: The SMA is calculated as the average of the prices over a fixed number of days. This smooths out the price movements, making it easier to spot trends.
+
+**Dry Run for SMA**:
+
+Assume smaWindow = 5 and prices are [100, 102, 104, 105, 106].
+The sum of the last 5 prices: 100 + 102 + 104 + 105 + 106 = 517.
+SMA = 517 / 5 = 103.4.
+
+### RSI Calculation
+
+```cpp
+double calculateRSI() {
+    if (prices.size() < rsiWindow + 1) return 0.0;  // Not enough data
+
+    double gain = 0.0, loss = 0.0;
+
+    for (int i = prices.size() - rsiWindow; i < prices.size(); ++i) {
+        double change = prices[i] - prices[i - 1];
+        if (change > 0) gain += change;
+        else loss -= change;
+    }
+```
+
+**Purpose**: The RSI is calculated based on the price changes (gains and losses) over the last rsiWindow periods.
+
+**Logic**:
+
+- If the price increases from the previous day, it's considered a gain.
+- If the price decreases, it's considered a loss.
+- Gains and losses are accumulated over the RSI window.
+
+**Why This Formula?**
+RSI tracks the momentum of the price, so we need to know how much the price is going up or down relative to previous periods. By calculating the average gain and average loss, we can tell whether the market is overbought or oversold.
+
+Continuing RSI Calculation:
+
+```cpp
+    double avgGain = gain / rsiWindow;
+    double avgLoss = loss / rsiWindow;
+
+    if (avgLoss == 0) return 100.0;  // No losses, RSI is 100
+
+    double rs = avgGain / avgLoss;
+    return 100 - (100 / (1 + rs));
+}
+```
+
+- `avgGain` and `avgLoss`: Average gain and loss over the window.
+- RS (Relative Strength): The ratio of average gain to average loss.
+  - If the market is consistently gaining, RS > 1.
+  - If the market is consistently losing, RS < 1.
+
+**RSI Formula**:
+
+```
+RSI = 100 - (100 / (1 + RS))
+```
+
+- If RS is high, RSI approaches 100, indicating an overbought condition.
+- If RS is low, RSI approaches 0, indicating an oversold condition.
+
+**Dry Run for RSI**:
+
+Suppose prices are [100, 102, 101, 103, 104] with rsiWindow = 4.
+Price changes: [+2, -1, +2, +1].
+
+Gains = 2 + 2 + 1 = 5.
+Losses = 1.
+avgGain = 5 / 4 = 1.25.
+avgLoss = 1 / 4 = 0.25.
+
+RS = 1.25 / 0.25 = 5.
+RSI = 100 - (100 / (1 + 5)) = 83.33 (indicating a strong uptrend).
+
+### Main Function and Dry Run
 
 ```cpp
 int main() {
@@ -137,7 +219,27 @@ int main() {
 }
 ```
 
+`priceData` contains a list of prices over time.
+For each price, we update the prices in the indicator object and calculate the SMA and RSI.
 
+**What Happens During a Dry Run?**
 
+Initially: The SMA and RSI cannot be calculated because there aren't enough prices (fewer than SMA_WINDOW or RSI_WINDOW).
+As more prices come in: Once the number of prices is at least SMA_WINDOW and RSI_WINDOW, the calculations begin. For each new price:
 
+- SMA is calculated as the average of the last 5 prices.
+- RSI is calculated as the ratio of average gains to average losses.
 
+For example:
+
+On day 5, with prices [100, 102, 101, 105, 110]:
+
+- SMA: The average of [100, 102, 101, 105, 110] is 103.6.
+- RSI: We have price changes of +2, -1, +4, +5, resulting in an RSI calculation.
+
+## Conclusion
+
+This code allows you to simulate and calculate two key trading indicators:
+
+- SMA smooths price trends.
+- RSI detects momentum shifts in the market. Both are used by traders to make buy/sell decisions.

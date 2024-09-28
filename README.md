@@ -59,11 +59,6 @@ int main() {
 }
 ```
 
-## 🤝 Join the Fun!
-
-Got some killer strategies up your sleeve? We're all ears! Fork, code, and hit us with that pull request. Let's make some money moves together! 💰
-
-
 ## ⚠️ Obligatory Warning
 
 Remember, folks: this is for educational purposes only. Don't bet the farm based on this code alone. Always backtest, paper trade, and think twice before risking real dough. And maybe don't quit your day job just yet. 😉

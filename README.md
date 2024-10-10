@@ -22,42 +22,17 @@ We're cooking up some tasty C++ code to help you trade smarter, not harder. Our 
 ### You'll Need:
 
 - A C++17 compiler (time to upgrade if you're living in the past)
-- CMake 3.10+ (because we're fancy like that)
+
 
 ### Let's Get This Party Started:
 
 ```bash
 git clone https://github.com/yourusername/cpp-algo-trading-strategies.git
 cd cpp-algo-trading-strategies
-mkdir build && cd build
-cmake ..
-make
+
 ```
 
-### Run Those Tests:
 
-```bash
-./run_tests
-```
-
-## 🎮 Wanna See Some Action?
-
-Check this out:
-
-```cpp
-#include "TradingMagic.hpp"
-
-int main() {
-    std::vector<double> prices = {100, 102, 104, 103, 105};
-    
-    TradingMagic magic;
-    double secretSauce = magic.doYourThing(prices);
-    
-    std::cout << "The magic number is: " << secretSauce << std::endl;
-    
-    return 0;
-}
-```
 
 ## ⚠️ Obligatory Warning
 

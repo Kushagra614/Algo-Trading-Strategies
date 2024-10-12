@@ -31,9 +31,6 @@ git clone https://github.com/yourusername/cpp-algo-trading-strategies.git
 cd cpp-algo-trading-strategies
 
 ```
-
-
-
 ## ⚠️ Obligatory Warning
 
 Remember, folks: this is for educational purposes only. Don't bet the farm based on this code alone. Always backtest, paper trade, and think twice before risking real dough. And maybe don't quit your day job just yet. 😉

@@ -17,7 +17,7 @@ We're cooking up some tasty C++ code to help you trade smarter, not harder. Our 
 - Mix-and-match modules (like Lego, but for trading)
 - Rigorous testing (we don't like nasty surprises)
 
-## 🏃‍♂️ Getting Started
+## 🏃‍♂️ Getting Started:
 
 ### You'll Need:
 
